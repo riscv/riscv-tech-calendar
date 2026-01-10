@@ -44,7 +44,9 @@ function App() {
     <div className="app-container">
       <header className="app-header">
         <div className="brand">
-          <img src={riscvLogo} alt="RISC-V Logo" className="logo" />
+          <a href="https://riscv.org" target="_blank" rel="noopener noreferrer">
+            <img src={riscvLogo} alt="RISC-V Logo" className="logo" />
+          </a>
           <h1>Technical Meetings</h1>
         </div>
         <div className="controls">
