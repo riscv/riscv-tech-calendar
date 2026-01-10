@@ -14,7 +14,7 @@
     align-items: center;
     justify-content: space-between;
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    flex-shrink: 0; /* Prevent header from shrinking */
+    flex-shrink: 0;
 }
 
 .brand {
@@ -41,6 +41,31 @@
 .controls {
     display: flex;
     align-items: center;
+    gap: 15px;
+}
+
+.header-links {
+    display: flex;
+    gap: 15px;
+}
+
+.header-links a {
+    color: white;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.header-links a:hover {
+    color: #ffd700; /* Gold highlight on hover */
+    text-decoration: underline;
+}
+
+.separator {
+    width: 1px;
+    height: 24px;
+    background-color: rgba(255, 255, 255, 0.3);
 }
 
 .timezone-select {
@@ -58,35 +83,43 @@
     width: 100%;
     position: relative;
     overflow: hidden;
-    /* Removed fixed height calculation, letting flex-grow handle it */
 }
 
 iframe {
     width: 100%;
     height: 100%;
     border: 0;
-    display: block; /* Removes bottom whitespace of inline elements */
+    display: block;
 }
 
 /* Mobile Adjustments */
-@media (max-width: 600px) {
+@media (max-width: 900px) {
     .app-header {
-        padding: 0 10px;
-        flex-direction: column;
         height: auto;
-        padding-bottom: 10px;
+        padding: 10px;
+        flex-direction: column;
         gap: 10px;
     }
     
     .brand {
         width: 100%;
-        padding-top: 10px;
         justify-content: center;
     }
 
     .controls {
         width: 100%;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .header-links {
+        flex-wrap: wrap;
         justify-content: center;
+        gap: 10px 15px;
+    }
+    
+    .separator {
+        display: none; /* Hide separator on mobile */
     }
 
     .timezone-select {

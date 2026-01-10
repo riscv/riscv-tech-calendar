@@ -48,6 +48,14 @@ function App() {
           <h1>Technical Meetings</h1>
         </div>
         <div className="controls">
+          <nav className="header-links">
+            <a href="https://projectadmin.lfx.linuxfoundation.org/" target="_blank" rel="noopener noreferrer">LFX</a>
+            <a href="https://openprofile.dev/" target="_blank" rel="noopener noreferrer">Profile</a>
+            <a href="https://riscv.atlassian.net/wiki/spaces/HOME/pages/16154865/RISC-V+Technical+Meetings" target="_blank" rel="noopener noreferrer">Guidelines</a>
+            <a href="https://riscv.atlassian.net/wiki/spaces/HOME/pages/16154892/Meeting+Disclosures" target="_blank" rel="noopener noreferrer">Disclosures</a>
+            <a href="https://riscv.org/code-of-conduct/" target="_blank" rel="noopener noreferrer">CoC</a>
+          </nav>
+          <div className="separator"></div>
           <select 
             value={timezone} 
             onChange={(e) => setTimezone(e.target.value)}
