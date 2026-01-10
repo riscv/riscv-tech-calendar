@@ -3,21 +3,25 @@ import riscvLogo from './assets/riscv-logo.png';
 import './App.css';
 
 function App() {
-  const [timezone, setTimezone] = useState('');
-  const [viewMode, setViewMode] = useState('WEEK');
-  const [allTimezones, setAllTimezones] = useState([]);
+  const [timezone, setTimezone] = useState(() => {
+    try {
+      return Intl.DateTimeFormat().resolvedOptions().timeZone;
+    } catch {
+      return 'UTC';
+    }
+  });
+  const [viewMode, setViewMode] = useState(() => {
+    return window.innerWidth < 768 ? 'AGENDA' : 'WEEK';
+  });
+  const [allTimezones] = useState(() => {
+    if (Intl.supportedValuesOf) {
+      return Intl.supportedValuesOf('timeZone');
+    }
+    return [];
+  });
 
   useEffect(() => {
-    // 1. Detect Initial Timezone
-    const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    setTimezone(userTimezone);
-
-    // 2. Populate Timezone List
-    if (Intl.supportedValuesOf) {
-      setAllTimezones(Intl.supportedValuesOf('timeZone'));
-    }
-
-    // 3. Responsive View Logic
+    // Responsive View Logic
     const handleResize = () => {
       if (window.innerWidth < 768) {
         setViewMode('AGENDA');
@@ -25,9 +29,6 @@ function App() {
         setViewMode('WEEK');
       }
     };
-
-    // Initial check
-    handleResize();
 
     // Listen for resize
     window.addEventListener('resize', handleResize);
@@ -52,7 +53,7 @@ function App() {
         <div className="controls">
           <nav className="header-links">
             <a href="https://projectadmin.lfx.linuxfoundation.org/" target="_blank" rel="noopener noreferrer">LFX</a>
-            <a href="https://openprofile.dev/" target="_blank" rel="noopener noreferrer">Profile</a>
+            <a href="https://openprofile.dev/" target="_blank" rel="noopener noreferrer">Openprofile.dev</a>
             <a href="https://riscv.atlassian.net/wiki/spaces/HOME/pages/16154865/RISC-V+Technical+Meetings" target="_blank" rel="noopener noreferrer">Guidelines</a>
             <a href="https://riscv.atlassian.net/wiki/spaces/HOME/pages/16154892/Meeting+Disclosures" target="_blank" rel="noopener noreferrer">Disclosures</a>
             <a href="https://riscv.org/code-of-conduct/" target="_blank" rel="noopener noreferrer">CoC</a>
