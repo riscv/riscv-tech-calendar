@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import riscvLogo from './assets/riscv-logo.png';
 import './App.css';
 
 function App() {
@@ -43,7 +44,7 @@ function App() {
     <div className="app-container">
       <header className="app-header">
         <div className="brand">
-          <img src="/riscv-tech-calendar/favicon.png" alt="RISC-V Logo" className="logo" />
+          <img src={riscvLogo} alt="RISC-V Logo" className="logo" />
           <h1>Technical Meetings</h1>
         </div>
         <div className="controls">

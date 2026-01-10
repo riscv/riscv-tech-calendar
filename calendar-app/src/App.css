@@ -24,11 +24,11 @@
 }
 
 .logo {
-    height: 32px;
+    height: 40px;
     width: auto;
     background-color: white;
     border-radius: 4px;
-    padding: 2px;
+    padding: 4px 8px;
 }
 
 .app-header h1 {
