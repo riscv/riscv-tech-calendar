@@ -52,7 +52,7 @@ function App() {
         </div>
         <div className="controls">
           <nav className="header-links">
-            <a href="https://projectadmin.lfx.linuxfoundation.org/" target="_blank" rel="noopener noreferrer">LFX</a>
+            <a href="https://openprofile.dev/my-meetings/" target="_blank" rel="noopener noreferrer">My Meetings (LFX)</a>
             <a href="https://openprofile.dev/" target="_blank" rel="noopener noreferrer">Openprofile.dev</a>
             <a href="https://riscv.atlassian.net/wiki/spaces/HOME/pages/16154865/RISC-V+Technical+Meetings" target="_blank" rel="noopener noreferrer">Guidelines</a>
             <a href="https://riscv.atlassian.net/wiki/spaces/HOME/pages/16154892/Meeting+Disclosures" target="_blank" rel="noopener noreferrer">Disclosures</a>
