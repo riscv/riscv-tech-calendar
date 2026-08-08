@@ -49,6 +49,9 @@ Important: newly added or removed LFX meetings can only appear after the public
 ICS endpoint has published the change. The app can force-reload the endpoint,
 but it cannot see meetings before LFX exposes them in that feed.
 
+See [LFX Sync State](docs/lfx-sync-state.md) for the refresh state diagram and
+cache/update pipeline.
+
 ## Meeting Kinds
 
 Only these meeting types get dedicated filters:
