@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import riscvLogo from './assets/riscv-logo.png';
 import { AgendaList } from './components/AgendaList.jsx';
 import { EventDetail } from './components/EventDetail.jsx';
 import { EventHoverCard } from './components/EventHoverCard.jsx';
 import { FilterBar } from './components/FilterBar.jsx';
 import { MiniMonth } from './components/MiniMonth.jsx';
 import { WeekGrid } from './components/WeekGrid.jsx';
+import { calendarConfig } from './config/calendarConfig.js';
 import { useMeetings } from './hooks/useMeetings.js';
 import { KINDS } from './lib/classify.js';
 import {
@@ -30,7 +30,7 @@ import './App.css';
 const MOBILE_BREAKPOINT = 768;
 const VIEW_MODES = new Set(['WEEK', 'AGENDA', 'DAY']);
 const DAY_KEY_RE = /^\d{4}-\d{2}-\d{2}$/;
-const TIME_FORMAT_KEY = 'riscv-calendar-time-format';
+const TIME_FORMAT_KEY = calendarConfig.storage.timeFormatKey;
 const TIME_FORMATS = new Set(['24h', '12h']);
 
 /**
@@ -437,10 +437,14 @@ function App() {
       <header className="app-header">
         <div className="app-header-inner">
           <div className="brand">
-            <a href="https://riscv.org" target="_blank" rel="noopener noreferrer">
-              <img src={riscvLogo} alt="RISC-V Logo" className="logo" />
+            <a href={calendarConfig.homeUrl} target="_blank" rel="noopener noreferrer">
+              <img
+                src={calendarConfig.logo.src}
+                alt={calendarConfig.logo.alt}
+                className="logo"
+              />
             </a>
-            <h1>Technical Meetings</h1>
+            <h1>{calendarConfig.title}</h1>
           </div>
           <div className="controls">
             <div className="feed-refresh" aria-live="polite">
@@ -597,65 +601,22 @@ function App() {
               onSelectDay={pickDay}
               onChangeMonth={(n) => setMonthAnchor((k) => addMonthsToKey(k, n))}
             />
-            <nav className="sidebar-links" aria-label="RISC-V resources">
-              <h2>Meeting Resources</h2>
-              <a
-                href="https://openprofile.dev/my-meetings/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                My Meetings (LFX)
-              </a>
-              <a
-                href="https://openprofile.dev/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Openprofile.dev
-              </a>
-              <a
-                href="https://riscv.atlassian.net/wiki/spaces/HOME/pages/16154865/RISC-V+Technical+Meetings"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Meeting Guidelines
-              </a>
-              <a
-                href="https://riscv.atlassian.net/wiki/spaces/HOME/pages/16154892/Meeting+Disclosures"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Disclosures
-              </a>
-              <a
-                href="https://riscv.org/code-of-conduct/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Code of Conduct
-              </a>
-              <h2>Reference</h2>
-              <a
-                href="https://riscv.github.io/adm-tc-dashboard/?committees"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Tech Committees Explorer
-              </a>
-              <a
-                href="https://riscv.github.io/adm-spec-dashboard/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Specification Development Dashboard
-              </a>
-              <a
-                href="https://tech.riscv.org/members/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                RISC-V Members
-              </a>
+            <nav className="sidebar-links" aria-label={`${calendarConfig.projectName} resources`}>
+              {calendarConfig.resourceGroups.map((group) => (
+                <div key={group.title} className="sidebar-link-group">
+                  <h2>{group.title}</h2>
+                  {group.links.map((link) => (
+                    <a
+                      key={link.href}
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {link.label}
+                    </a>
+                  ))}
+                </div>
+              ))}
             </nav>
           </aside>
 
@@ -703,11 +664,11 @@ function App() {
         <div className="app-footer-inner">
           Source:{' '}
           <a
-            href="https://webcal.prod.itx.linuxfoundation.org/lfx/a092M00001JV3GBQA1"
+            href={calendarConfig.feed.url}
             target="_blank"
             rel="noopener noreferrer"
           >
-            LFX calendar feed
+            {calendarConfig.feed.sourceLabel}
           </a>
         </div>
       </footer>

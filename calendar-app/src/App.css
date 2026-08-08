@@ -400,7 +400,7 @@
     color: #7c8894;
 }
 
-.sidebar-links h2:not(:first-child) {
+.sidebar-link-group + .sidebar-link-group {
     margin-top: 12px;
     padding-top: 10px;
     border-top: 1px solid #dfe5eb;

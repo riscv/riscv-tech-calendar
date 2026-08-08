@@ -15,6 +15,26 @@ npm install
 npm run dev
 ```
 
+## Project Customization
+
+Most project-specific settings live in:
+
+```text
+src/config/calendarConfig.js
+```
+
+Change that file to reuse the calendar for another LFX project. It controls:
+
+- Project name, title, logo, and home URL
+- Public LFX iCalendar feed URL
+- Browser cache and preference keys
+- Reference timezones shown in the week view
+- Meeting kind filters and matching rules
+- Title cleanup and duplicate-detection rules
+- Sidebar resource groups and links
+
+The default config is the RISC-V technical meetings calendar.
+
 ## Verification
 
 ```bash

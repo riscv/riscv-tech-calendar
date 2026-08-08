@@ -7,6 +7,7 @@ import {
   minutesSinceMidnightIn,
   zoneAbbrev,
 } from '../lib/datetime.js';
+import { kindTagClass } from '../lib/classify.js';
 
 /**
  * The selected range as a day-by-day list.
@@ -174,7 +175,7 @@ export function AgendaList({
                     <span className="agenda-title">{occ.title}</span>
                     <span className="agenda-kinds">
                       {occ.kinds.map((k) => (
-                        <span key={k} className={`kind-tag kind-${k.toLowerCase()}`}>
+                        <span key={k} className={kindTagClass(k)}>
                           {k}
                         </span>
                       ))}

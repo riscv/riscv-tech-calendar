@@ -1,3 +1,5 @@
+import { calendarConfig } from '../config/calendarConfig.js';
+
 /**
  * Turns a raw ICS SUMMARY into something displayable and filterable.
  *
@@ -7,7 +9,33 @@
  * key to collapse duplicates.
  */
 
-export const KINDS = ['TG', 'SIG', 'HC', 'CSC', 'Other'];
+export const KINDS = [
+  ...calendarConfig.meetingKinds.map((kind) => kind.key),
+  calendarConfig.fallbackKind.key,
+];
+
+function slug(value) {
+  return String(value ?? '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+function kindConfig(kind) {
+  if (kind === calendarConfig.fallbackKind.key) return calendarConfig.fallbackKind;
+  return calendarConfig.meetingKinds.find((item) => item.key === kind);
+}
+
+export function kindFilterTitle(kind) {
+  const config = kindConfig(kind);
+  if (config?.title) return config.title;
+  return `Show only ${kind}`;
+}
+
+export function kindTagClass(kind) {
+  const className = kindConfig(kind)?.className ?? `kind-${slug(kind)}`;
+  return `kind-tag ${className}`;
+}
 
 /**
  * A meeting can legitimately be more than one kind — 'RV Joint Crypto SIG/TGs'
@@ -17,18 +45,13 @@ export const KINDS = ['TG', 'SIG', 'HC', 'CSC', 'Other'];
  * Only the four working-group types get their own filter. Everything else —
  * Marketing, Events, Development Partners, one-off syncs — lands in Other.
  */
-const KIND_RULES = [
-  ['HC', /\bHCs?\b/i],
-  ['TG', /\bTGs?\b/i],
-  ['SIG', /\bSIGs?\b/i],
-  ['CSC', /\bCSC\b|Certification Steering Committee/i],
-];
+const KIND_RULES = calendarConfig.meetingKinds.map((kind) => [kind.key, kind.pattern]);
 
 // Trailing bookkeeping: '(New)', '(new)', '(LFX)', '(20260805)'.
-const NOISE_SUFFIX = /\s*\((?:new|lfx|\d{6,8})\)\s*$/i;
+const NOISE_SUFFIX = calendarConfig.titleCleanup.noiseSuffix;
 
 // Org prefixes that vary between duplicate entries for the same group.
-const ORG_PREFIX = /^(?:rv-lfx|risc-v-lfx|rv|risc-v)\s*[:-]?\s+/i;
+const ORG_PREFIX = calendarConfig.titleCleanup.dedupPrefix;
 
 /** Display title: strip trailing bookkeeping, collapse whitespace. Prefix kept. */
 export function cleanTitle(summary) {
@@ -55,7 +78,7 @@ export function dedupKey(summary) {
 export function kindsOf(summary) {
   const s = String(summary ?? '');
   const found = KIND_RULES.filter(([, re]) => re.test(s)).map(([kind]) => kind);
-  return found.length ? found : ['Other'];
+  return found.length ? found : [calendarConfig.fallbackKind.key];
 }
 
 export function classify(summary) {

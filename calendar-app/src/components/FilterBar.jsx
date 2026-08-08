@@ -1,8 +1,4 @@
-import { KINDS } from '../lib/classify.js';
-
-const KIND_TITLES = {
-  Other: 'Show meetings that are not TG, SIG, HC, or CSC',
-};
+import { KINDS, kindFilterTitle } from '../lib/classify.js';
 
 /**
  * Search box and one toggle per group kind.
@@ -72,7 +68,7 @@ export function FilterBar({
         {KINDS.map((kind) => {
           const active = activeKinds.has(kind);
           const count = counts[kind] ?? 0;
-          const label = KIND_TITLES[kind] ?? `Show only ${kind}`;
+          const label = kindFilterTitle(kind);
           return (
             <button
               key={kind}

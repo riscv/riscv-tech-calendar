@@ -22,6 +22,7 @@ import { findMatchInOccurrences } from '../occurrenceSearch.js';
 import { parseCalendar } from '../ics.js';
 import { expand } from '../occurrences.js';
 import { fetchFeed } from '../feed.js';
+import { calendarConfig } from '../../config/calendarConfig.js';
 
 const FIXTURE = readFileSync(
   fileURLToPath(new URL('./fixtures/lfx-sample.ics', import.meta.url)),
@@ -342,7 +343,7 @@ describe('fetchFeed', () => {
     vi.setSystemTime(at('2026-08-08T14:00:00Z'));
     const store = installSessionStorage();
     store.set(
-      'lfx-ics-v1',
+      calendarConfig.feed.cacheKey,
       JSON.stringify({
         text: FIXTURE,
         etag: '"old"',

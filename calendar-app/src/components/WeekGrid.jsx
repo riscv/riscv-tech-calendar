@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useNow } from '../hooks/useNow.js';
+import { calendarConfig } from '../config/calendarConfig.js';
 import {
   dayKeyIn,
   formatColumnHeading,
@@ -24,11 +25,7 @@ const TIME_LINE_MIN_HEIGHT = 50; // px
 const CURRENT_HOUR_FOCUS_RATIO = 0.22;
 const HOUR_MS = 60 * 60 * 1000;
 const DAY_MS = 24 * HOUR_MS;
-const TIME_RAILS = [
-  { key: 'pacific', timeZone: 'America/Los_Angeles' },
-  { key: 'central', timeZone: 'America/Chicago' },
-  { key: 'china', timeZone: 'Asia/Shanghai', label: 'China' },
-];
+const TIME_RAILS = calendarConfig.referenceTimezones;
 
 /**
  * Places overlapping meetings side by side.

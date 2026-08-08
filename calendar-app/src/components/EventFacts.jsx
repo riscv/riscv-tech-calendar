@@ -1,4 +1,5 @@
 import { dayKeyIn, formatDayHeading, formatTimeIn, zoneAbbrev } from '../lib/datetime.js';
+import { kindTagClass } from '../lib/classify.js';
 import { passcodeOf } from '../lib/meetingDetails.js';
 
 /**
@@ -48,7 +49,7 @@ export function EventFacts({ occurrence, timeZone, timeFormat = '24h' }) {
         <dt>Type</dt>
         <dd>
           {occurrence.kinds.map((k) => (
-            <span key={k} className={`kind-tag kind-${k.toLowerCase()}`}>
+            <span key={k} className={kindTagClass(k)}>
               {k}
             </span>
           ))}

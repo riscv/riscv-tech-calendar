@@ -1,16 +1,17 @@
+import { calendarConfig } from '../config/calendarConfig.js';
+
 /**
- * Fetches the RISC-V International calendar from LFX.
+ * Fetches the project calendar from LFX.
  *
  * The feed is served with `access-control-allow-origin: *` and gzips to ~38 KB,
  * so the browser can read it directly — no proxy and no build-time snapshot.
  * LFX stays the single source of truth.
  */
 
-export const FEED_URL =
-  'https://webcal.prod.itx.linuxfoundation.org/lfx/a092M00001JV3GBQA1';
+export const FEED_URL = calendarConfig.feed.url;
 
-const CACHE_KEY = 'lfx-ics-v1';
-const TTL_MS = 15 * 60 * 1000;
+const CACHE_KEY = calendarConfig.feed.cacheKey;
+const TTL_MS = calendarConfig.feed.cacheTtlMs;
 
 function readCache() {
   try {
