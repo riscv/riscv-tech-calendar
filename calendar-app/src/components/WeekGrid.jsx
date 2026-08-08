@@ -23,6 +23,7 @@ const CROWDED_LANES = 3;
 const TIME_LINE_MIN_HEIGHT = 50; // px
 const CURRENT_HOUR_FOCUS_RATIO = 0.22;
 const HOUR_MS = 60 * 60 * 1000;
+const DAY_MS = 24 * HOUR_MS;
 const TIME_RAILS = [
   { key: 'pacific', timeZone: 'America/Los_Angeles' },
   { key: 'central', timeZone: 'America/Chicago' },
@@ -115,6 +116,14 @@ function focusSiblingEvent(current, direction) {
   next.scrollIntoView({ block: 'nearest', inline: 'nearest' });
 }
 
+function dayOffsetLabel(baseKey, targetKey) {
+  if (baseKey === targetKey) return '';
+  const base = Date.parse(`${baseKey}T00:00:00Z`);
+  const target = Date.parse(`${targetKey}T00:00:00Z`);
+  const diff = Math.round((target - base) / DAY_MS);
+  return diff > 0 ? `+${diff}` : String(diff);
+}
+
 export function WeekGrid({
   dayKeys,
   occurrences,
@@ -190,12 +199,17 @@ export function WeekGrid({
   ];
   const hourRows = hours.map((h) => {
     const instant = new Date(firstDayStart.getTime() + (h - startHour) * HOUR_MS);
+    const selectedDayKey = dayKeyIn(instant, timeZone);
     return {
       hour: h,
-      values: rails.map((rail) => ({
-        ...rail,
-        time: formatTimeIn(instant, rail.timeZone, timeFormat),
-      })),
+      values: rails.map((rail) => {
+        const railDayKey = dayKeyIn(instant, rail.timeZone);
+        return {
+          ...rail,
+          time: formatTimeIn(instant, rail.timeZone, timeFormat),
+          offset: rail.local ? '' : dayOffsetLabel(selectedDayKey, railDayKey),
+        };
+      }),
     };
   });
 
@@ -307,7 +321,7 @@ export function WeekGrid({
               className="weekgrid-hour-label"
               style={{ height: hourHeight }}
               title={row.values
-                .map((value) => `${value.time} ${value.label}`)
+                .map((value) => `${value.time}${value.offset ? ` ${value.offset}` : ''} ${value.label}`)
                 .join(' / ')}
             >
               {row.values.map((value) => (
@@ -317,6 +331,9 @@ export function WeekGrid({
                   data-rail={value.key}
                 >
                   {value.time}
+                  {value.offset && (
+                    <small className="weekgrid-hour-offset"> {value.offset}</small>
+                  )}
                 </span>
               ))}
             </div>

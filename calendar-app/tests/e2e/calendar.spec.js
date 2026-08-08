@@ -164,10 +164,11 @@ test('week grid shows Pacific, Central, China, and selected timezone time rails'
   await expect(page.locator('.weekgrid-gutter-head')).toContainText('CDT');
   await expect(page.locator('.weekgrid-gutter-head')).toContainText('China');
   await expect(page.locator('.weekgrid-gutter-head')).toContainText('GMT-3');
-  await expect(page.locator('.weekgrid-hour-rail[data-rail="pacific"]').first()).toHaveText('20:00');
-  await expect(page.locator('.weekgrid-hour-rail[data-rail="central"]').first()).toHaveText('22:00');
+  await expect(page.locator('.weekgrid-hour-rail[data-rail="pacific"]').first()).toHaveText('20:00 -1');
+  await expect(page.locator('.weekgrid-hour-rail[data-rail="central"]').first()).toHaveText('22:00 -1');
   await expect(page.locator('.weekgrid-hour-rail[data-rail="china"]').first()).toHaveText('11:00');
   await expect(page.locator('.weekgrid-hour-rail[data-rail="selected"]').first()).toHaveText('00:00');
+  await expect(page.locator('.weekgrid-hour-rail[data-rail="china"]').nth(21)).toHaveText('08:00 +1');
 });
 
 test('time format toggle switches to 12h and persists in the browser', async ({ page }) => {
@@ -183,7 +184,7 @@ test('time format toggle switches to 12h and persists in the browser', async ({ 
     'true',
   );
   await expect(page.locator('.weekgrid-hour-rail[data-rail="pacific"]').first()).toHaveText(
-    '8:00 PM',
+    '8:00 PM -1',
   );
   await expect(page.locator('.weekgrid-hour-rail[data-rail="selected"]').first()).toHaveText(
     '12:00 AM',
@@ -199,6 +200,9 @@ test('time format toggle switches to 12h and persists in the browser', async ({ 
   );
   await expect(page.locator('.weekgrid-hour-rail[data-rail="china"]').first()).toHaveText(
     '11:00 AM',
+  );
+  await expect(page.locator('.weekgrid-hour-rail[data-rail="china"]').nth(21)).toHaveText(
+    '8:00 AM +1',
   );
 });
 

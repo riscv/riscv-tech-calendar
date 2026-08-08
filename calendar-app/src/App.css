@@ -784,12 +784,22 @@
 }
 
 .weekgrid-hour-rail {
+    display: inline-flex;
+    justify-content: flex-end;
+    min-width: 0;
     color: #a3adb7;
 }
 
 .weekgrid-hour-rail.is-local {
     color: #6f7b86;
     font-weight: 700;
+}
+
+.weekgrid-hour-offset {
+    color: #b52626;
+    font-size: 0.55rem;
+    font-weight: 800;
+    line-height: 1;
 }
 
 .weekgrid-col {
