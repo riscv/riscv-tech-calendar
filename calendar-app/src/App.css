@@ -1,20 +1,41 @@
 .app-container {
+    /* Bars stay full-bleed; their contents are centred to this width so the
+       calendar does not stretch edge-to-edge on a wide monitor. */
+    --content-max: 1500px;
+
     display: flex;
     flex-direction: column;
     height: 100vh;
     width: 100%;
 }
 
+/* Every band is full-bleed, but its contents share one centred column so the
+   header, controls, calendar and footer all line up. */
+.app-header-inner,
+.controlbar-inner,
+.calendar-layout,
+.app-footer-inner {
+    width: 100%;
+    max-width: var(--content-max);
+    margin-inline: auto;
+    /* These carry their own padding; without border-box the 100% width
+       overflows a narrow viewport and clips content. */
+    box-sizing: border-box;
+}
+
 .app-header {
     background-color: #003262; /* Berkeley Blue */
     color: white;
     padding: 0 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    flex-shrink: 0;
+}
+
+.app-header-inner {
     height: 60px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    flex-shrink: 0;
 }
 
 .brand {
@@ -41,31 +62,139 @@
 .controls {
     display: flex;
     align-items: center;
-    gap: 15px;
+    justify-content: flex-end;
+    gap: 12px;
+    min-width: 0;
 }
 
-.header-links {
+.feed-refresh {
     display: flex;
-    gap: 15px;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    padding: 4px 6px 4px 10px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.08);
 }
 
-.header-links a {
-    color: white;
-    text-decoration: none;
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: color 0.2s;
+.last-updated {
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 0.72rem;
+    white-space: nowrap;
 }
 
-.header-links a:hover {
-    color: #ffd700; /* Gold highlight on hover */
-    text-decoration: underline;
+.last-updated strong {
+    color: #fff;
+    font-variant-numeric: tabular-nums;
 }
 
-.separator {
-    width: 1px;
-    height: 24px;
-    background-color: rgba(255, 255, 255, 0.3);
+.refresh-result {
+    border-radius: 999px;
+    padding: 2px 7px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.refresh-result.is-neutral {
+    background: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.72);
+}
+
+.refresh-result.is-ok {
+    background: rgba(125, 211, 162, 0.18);
+    color: #c6f6d5;
+}
+
+.refresh-result.is-warn {
+    background: rgba(255, 215, 112, 0.18);
+    color: #ffe8a3;
+}
+
+.refresh-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.14);
+    color: #fff;
+    padding: 0;
+    cursor: pointer;
+}
+
+.refresh-button svg {
+    display: block;
+    stroke-width: 2.1;
+}
+
+.refresh-button.is-refreshing svg {
+    animation: refresh-spin 0.8s linear infinite;
+}
+
+@keyframes refresh-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.refresh-button:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.24);
+}
+
+.refresh-button:focus-visible,
+.local-tz-button:focus-visible,
+.time-format-toggle button:focus-visible,
+.timezone-select:focus-visible,
+.week-nav button:focus-visible,
+.view-toggle button:focus-visible,
+.search-nav button:focus-visible,
+.kind-chip:focus-visible,
+.filter-reset:focus-visible,
+.filter-active button:focus-visible,
+.minimonth-day:focus-visible,
+.minimonth-head button:focus-visible,
+.agenda-item:focus-visible,
+.agenda-join:focus-visible,
+.sidebar-links a:focus-visible,
+.detail-close:focus-visible,
+.detail-copy:focus-visible,
+.detail-join:focus-visible,
+.hovercard-copy:focus-visible,
+.hovercard-join:focus-visible {
+    outline: 2px solid #d32f2f;
+    outline-offset: 2px;
+}
+
+.refresh-button:disabled {
+    color: rgba(255, 255, 255, 0.45);
+    cursor: default;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .refresh-button.is-refreshing svg {
+        animation: none;
+    }
+}
+
+.tz-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.75);
+    white-space: nowrap;
+}
+
+.tz-abbrev {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 3px;
+    padding: 1px 6px;
+    font-weight: 700;
+    color: #fff;
 }
 
 .timezone-select {
@@ -78,38 +207,1418 @@
     max-width: 200px;
 }
 
+.local-tz-button {
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    padding: 5px 8px;
+    font-size: 0.74rem;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.local-tz-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.time-format-toggle {
+    display: inline-flex;
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    border-radius: 4px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.time-format-toggle button {
+    border: 0;
+    border-left: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.78);
+    padding: 5px 8px;
+    font-size: 0.74rem;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.time-format-toggle button:first-child {
+    border-left: 0;
+}
+
+.time-format-toggle button:hover {
+    background: rgba(255, 255, 255, 0.18);
+}
+
+.time-format-toggle button.is-active {
+    background: #fff;
+    color: #003262;
+}
+
 .calendar-container {
     flex-grow: 1;
     width: 100%;
-    position: relative;
+    min-height: 0;
+    display: flex;
     overflow: hidden;
+    background: #f7f8fa;
+    padding: 0 20px;
+    box-sizing: border-box;
 }
 
-iframe {
-    width: 100%;
+.calendar-layout {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
     height: 100%;
+    min-height: 0;
+}
+
+.sidebar {
+    flex: 0 0 auto;
+    padding: 14px 0;
+}
+
+/* The scroll container for the calendar body. The week grid's day header
+   sticks to the top of this element. */
+.calendar-scroll {
+    flex: 1 1 auto;
+    min-width: 0;
+    height: 100%;
+    overflow: auto;
+}
+
+/* ---- Mini month calendar ---- */
+
+.minimonth {
+    width: 210px;
+    background: #fff;
+    border: 1px solid #e3e6ea;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.minimonth-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+}
+
+.minimonth-head button {
     border: 0;
+    background: none;
+    color: #003262;
+    font-size: 1.1rem;
+    line-height: 1;
+    padding: 2px 8px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.minimonth-head button:hover {
+    background: #eef2f6;
+}
+
+.minimonth-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #003262;
+}
+
+.minimonth-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1px;
+}
+
+.minimonth-dow {
+    text-align: center;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #8a949e;
+    padding-bottom: 4px;
+}
+
+.minimonth-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    background: none;
+    border-radius: 50%;
+    font-size: 0.75rem;
+    color: #23303c;
+    cursor: pointer;
+    padding: 0;
+}
+
+.minimonth-day:hover {
+    background: #eef2f6;
+}
+
+.minimonth-day.is-outside {
+    color: #b6bec6;
+}
+
+/* Shades the week currently shown in the grid, for orientation. */
+.minimonth-day.is-inweek {
+    background: #e8eef5;
+}
+
+.minimonth-day.is-today {
+    background: #d32f2f;
+    color: #fff;
+    font-weight: 700;
+}
+
+.minimonth-day.is-today:hover {
+    background: #b52626;
+}
+
+.minimonth-day.is-selected {
+    outline: 2px solid #003262;
+    outline-offset: -2px;
+}
+
+.sidebar-links {
+    width: 210px;
+    margin-top: 12px;
+    background: #fff;
+    border: 1px solid #e3e6ea;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.sidebar-links h2 {
+    margin: 0 0 8px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #7c8894;
+}
+
+.sidebar-links h2:not(:first-child) {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid #dfe5eb;
+}
+
+.sidebar-links a {
     display: block;
+    padding: 7px 0;
+    border-top: 1px solid #edf0f3;
+    color: #003262;
+    font-size: 0.78rem;
+    font-weight: 600;
+    line-height: 1.25;
+    text-decoration: none;
+}
+
+.sidebar-links a:hover {
+    text-decoration: underline;
+}
+
+/* ---- Control bar: day picker, view toggle, search and filters, one row ---- */
+
+/* Tinted and ruled so the working controls read as a distinct band between
+   the brand header and the calendar itself. */
+.controlbar {
+    padding: 12px 20px;
+    background: linear-gradient(180deg, #eef3f8 0%, #e6edf4 100%);
+    border-bottom: 1px solid #c9d5e0;
+    box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.7), 0 1px 3px rgba(0, 50, 98, 0.06);
+    flex-shrink: 0;
+}
+
+.controlbar-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.controlbar-main {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px 14px;
+    flex-wrap: wrap;
+}
+
+.week-nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.week-nav button,
+.view-toggle button {
+    border: 1px solid #ccd2d9;
+    background: #fff;
+    color: #003262;
+    border-radius: 4px;
+    padding: 6px 12px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.week-nav button:hover,
+.view-toggle button:hover {
+    background: #eef2f6;
+}
+
+.view-toggle {
+    display: flex;
+    gap: 4px;
+}
+
+.view-toggle button.is-active {
+    background: #003262;
+    border-color: #003262;
+    color: #fff;
+}
+
+.week-range {
+    margin-left: 8px;
+    font-weight: 600;
+    color: #003262;
+    /* Without this the flex row squeezes 'Mon 3 – Sun 9' onto three lines. */
+    white-space: nowrap;
+}
+
+/* ---- Search and filters (inline in the control bar) ---- */
+
+.filter-search {
+    padding: 7px 16px;
+    border: 1px solid #b9c6d3;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    background: #fff;
+    /* Grows into whatever the row has spare, up to roughly the middle of the
+       grid. A small basis keeps everything on one line; flex-grow does the
+       widening, so the bar never pushes the stats onto a second row. */
+    flex: 1 1 200px;
+    min-width: 170px;
+    max-width: 430px;
+}
+
+.filter-search:focus {
+    outline: 2px solid #003262;
+    outline-offset: 1px;
+    border-color: #003262;
+}
+
+/* ---- Look-ahead search ---- */
+
+.search-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex: 1 1 200px;
+    min-width: 170px;
+    max-width: 430px;
+}
+
+.search-wrap .filter-search {
+    flex: 1 1 auto;
+    max-width: none;
+    min-width: 0;
+    padding-right: 58px;
+}
+
+/* Sit inside the rounded field rather than stealing width from the row. */
+.search-nav {
+    position: absolute;
+    right: 6px;
+    display: flex;
+    gap: 2px;
+}
+
+.search-nav button {
+    border: 0;
+    background: none;
+    color: #003262;
+    font-size: 0.85rem;
+    line-height: 1;
+    padding: 4px 5px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.search-nav button:hover:not(:disabled) {
+    background: #dde6ef;
+}
+
+.search-nav button:disabled {
+    color: #b6bec6;
+    cursor: default;
+}
+
+.search-notice {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 14px;
+    font-size: 0.75rem;
+    color: #8a5a12;
+    background: #fdf3e0;
+    border: 1px solid #eadfae;
+    border-radius: 4px;
+    padding: 2px 8px;
+    white-space: nowrap;
+    z-index: 5;
+}
+
+/* ---- Stats ---- */
+
+.stats-panel {
+    margin-inline: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    max-width: 100%;
+    overflow-x: auto;
+    color: #6a7480;
+    font-size: 0.78rem;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    scrollbar-width: none;
+}
+
+.stats-panel::-webkit-scrollbar {
+    display: none;
+}
+
+.stats-panel span {
+    flex: 0 0 auto;
+}
+
+.stats-panel span + span::before {
+    content: '·';
+    margin-right: 7px;
+    color: #a3adb7;
+}
+
+.filter-kinds {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.filter-active {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid #c9d5e0;
+    border-radius: 999px;
+    background: #f8fbfe;
+    color: #5a6672;
+    padding: 3px 5px 3px 10px;
+    font-size: 0.76rem;
+    white-space: nowrap;
+}
+
+.filter-active button {
+    border: 0;
+    border-radius: 999px;
+    background: #003262;
+    color: #fff;
+    padding: 2px 8px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.filter-active button:hover {
+    background: #024a8f;
+}
+
+.filter-reset {
+    border: 1px solid #c9d5e0;
+    border-radius: 999px;
+    background: #fff;
+    color: #003262;
+    padding: 4px 10px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.filter-reset:hover {
+    background: #eef2f6;
+}
+
+.kind-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid #ccd2d9;
+    background: #fff;
+    color: #5a6672;
+    border-radius: 999px;
+    padding: 4px 12px;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.kind-chip.is-active {
+    background: #003262;
+    border-color: #003262;
+    color: #fff;
+}
+
+.kind-chip:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
+.kind-count {
+    font-size: 0.75rem;
+    opacity: 0.8;
+}
+
+/* ---- Kind tags ---- */
+
+.kind-tag {
+    display: inline-block;
+    padding: 1px 7px;
+    margin-right: 4px;
+    border-radius: 3px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    background: #e3e6ea;
+    color: #3c4650;
+}
+
+.kind-tg    { background: #d8e6f5; color: #14395e; }
+.kind-sig   { background: #dcefdc; color: #1f4a24; }
+.kind-hc    { background: #f7e2c8; color: #6b3f10; }
+.kind-csc   { background: #e6ddf3; color: #402a63; }
+.kind-other { background: #e3e6ea; color: #3c4650; }
+
+/* ---- Week grid ---- */
+
+.weekgrid {
+    --time-gutter: 172px;
+    padding: 0 0 20px;
+    min-width: 840px;
+}
+
+.weekgrid-head,
+.weekgrid-body {
+    display: grid;
+    grid-template-columns:
+        var(--time-gutter)
+        repeat(5, minmax(96px, 1fr))
+        repeat(2, minmax(44px, 0.34fr));
+}
+
+.weekgrid-body {
+    position: relative;
+}
+
+/* Stays put while the meeting body scrolls beneath it. The z-index must clear
+   the event layer (3) and the now-line (4), or they paint over the headings. */
+.weekgrid-head {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #f7f8fa;
+    box-shadow: 0 1px 0 #d8dde3;
+}
+
+.weekgrid-col-head {
+    padding: 10px 4px;
+    text-align: center;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #003262;
+    border-bottom: 1px solid #d8dde3;
+}
+
+.weekgrid-col-head.is-today {
+    background: #d32f2f;
+    color: #fff;
+    border-bottom-color: #b52626;
+}
+
+.weekgrid-gutter-head {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(32px, 1fr));
+    gap: 4px;
+    align-items: end;
+    padding: 10px 6px 8px 0;
+    border-bottom: 1px solid #d8dde3;
+    color: #7c8894;
+    font-size: 0.62rem;
+    font-weight: 800;
+    text-align: right;
+    text-transform: uppercase;
+}
+
+.weekgrid-gutter-head .is-local {
+    color: #003262;
+}
+
+.weekgrid-gutter {
+    position: relative;
+}
+
+.weekgrid-hour-label {
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(32px, 1fr));
+    gap: 4px;
+    font-size: 0.68rem;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    padding-right: 6px;
+    transform: translateY(-6px);
+}
+
+.weekgrid-hour-rail {
+    color: #a3adb7;
+}
+
+.weekgrid-hour-rail.is-local {
+    color: #6f7b86;
+    font-weight: 700;
+}
+
+.weekgrid-col {
+    position: relative;
+    border-left: 1px solid #e3e6ea;
+}
+
+.weekgrid-col.is-today {
+    background: rgba(211, 47, 47, 0.045);
+    box-shadow: inset 0 0 0 1px rgba(211, 47, 47, 0.1);
+}
+
+.weekgrid-hour-line {
+    box-sizing: border-box;
+    border-bottom: 1px solid #edf0f3;
+}
+
+.weekgrid-now-focus {
+    position: absolute;
+    left: var(--time-gutter);
+    right: 0;
+    height: 1px;
+    pointer-events: none;
+}
+
+/* Current time in the selected timezone, drawn across every visible day. */
+.weekgrid-now {
+    position: absolute;
+    left: var(--time-gutter);
+    right: 0;
+    height: 0;
+    border-top: 1px solid #d32f2f;
+    z-index: 4;
+    pointer-events: none;
+}
+
+.weekgrid-now::before {
+    content: '';
+    position: absolute;
+    left: -4px;
+    top: -3.5px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #d32f2f;
+}
+
+.weekgrid-event {
+    box-sizing: border-box;
+    position: absolute;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    border: 1px solid rgba(0, 50, 98, 0.18);
+    border-left: 3px solid #003262;
+    border-radius: 3px;
+    background: #eaf1f8;
+    padding: 3px 5px;
+    text-align: left;
+    cursor: pointer;
+    font-size: 0.72rem;
+    line-height: 1.15;
+    color: #14395e;
+}
+
+.weekgrid-event:hover {
+    filter: brightness(0.96);
+    z-index: 3;
+}
+
+.weekgrid-event:focus-visible {
+    outline: 2px solid #d32f2f;
+    outline-offset: 2px;
+    z-index: 6;
+}
+
+/* ---- Concurrent-meeting colours ----
+   Meetings sharing a slot are assigned successive lanes, and each lane gets
+   its own hue so four boxes side by side are separable at a glance. Lane 0
+   keeps the RISC-V blue, so a lone meeting looks unchanged. */
+
+.lane-0 { --lane-bg: #eaf1f8; --lane-edge: #003262; --lane-ink: #14395e; }
+.lane-1 { --lane-bg: #e4f1e6; --lane-edge: #2f6b34; --lane-ink: #1f4a24; }
+.lane-2 { --lane-bg: #fbeedb; --lane-edge: #8a5a12; --lane-ink: #6b3f10; }
+.lane-3 { --lane-bg: #ece5f6; --lane-edge: #4b2f7a; --lane-ink: #402a63; }
+.lane-4 { --lane-bg: #dcf0f1; --lane-edge: #17595e; --lane-ink: #124b4f; }
+.lane-5 { --lane-bg: #fbe4e9; --lane-edge: #8c2740; --lane-ink: #6d1f2c; }
+
+.weekgrid-event {
+    background: var(--lane-bg, #eaf1f8);
+    border-left-color: var(--lane-edge, #003262);
+    color: var(--lane-ink, #14395e);
+}
+
+/* A coloured edge mirrors the grid's lane colour in the list view. */
+.agenda-row {
+    border-left: 3px solid var(--lane-edge, transparent);
+    padding-left: 8px;
+}
+
+.weekgrid-event-time {
+    font-weight: 700;
+    font-size: 0.68rem;
+    opacity: 0.85;
+}
+
+.weekgrid-event-title {
+    overflow: hidden;
+    /* Long group names have no spaces to break on in a 60px lane, so allow
+       mid-word wrapping rather than letting the text overflow the box. */
+    overflow-wrap: anywhere;
+}
+
+.weekgrid-event.is-crowded {
+    font-size: 0.66rem;
+    line-height: 1.1;
+    padding: 2px 3px;
+    border-left-width: 2px;
+}
+
+.weekgrid-event-count {
+    align-self: flex-start;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.68);
+    color: var(--lane-ink, #14395e);
+    padding: 0 4px;
+    font-size: 0.58rem;
+    font-weight: 800;
+    line-height: 1.35;
+}
+
+.weekgrid-event.is-crowded .weekgrid-event-title {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.weekgrid-cluster {
+    position: absolute;
+    right: 4px;
+    z-index: 7;
+    border: 1px solid rgba(0, 50, 98, 0.2);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.94);
+    color: #003262;
+    padding: 1px 7px;
+    font-size: 0.62rem;
+    font-weight: 800;
+    box-shadow: 0 1px 4px rgba(0, 50, 98, 0.14);
+    cursor: pointer;
+}
+
+.weekgrid-cluster:hover,
+.weekgrid-cluster:focus-visible {
+    background: #fff;
+    outline: 2px solid #d32f2f;
+    outline-offset: 2px;
+}
+
+.cluster-popover {
+    position: fixed;
+    z-index: 30;
+    width: min(280px, calc(100vw - 24px));
+    max-height: min(360px, calc(100vh - 24px));
+    overflow: auto;
+    border: 1px solid #c9d5e0;
+    border-radius: 6px;
+    background: #fff;
+    box-shadow: 0 14px 34px rgba(0, 32, 64, 0.22);
+}
+
+.cluster-popover-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 9px 10px;
+    border-bottom: 1px solid #edf0f3;
+    color: #003262;
+    font-weight: 800;
+    font-size: 0.82rem;
+}
+
+.cluster-popover-head button {
+    border: 0;
+    border-radius: 4px;
+    background: transparent;
+    color: #5a6672;
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.cluster-popover-head button:hover {
+    background: #eef2f6;
+}
+
+.cluster-popover-list {
+    display: grid;
+    gap: 5px;
+    padding: 8px;
+}
+
+.cluster-popover-item {
+    display: grid;
+    gap: 2px;
+    border: 1px solid rgba(0, 50, 98, 0.16);
+    border-left: 4px solid var(--lane-edge, #003262);
+    border-radius: 4px;
+    background: var(--lane-bg, #eaf1f8);
+    color: var(--lane-ink, #14395e);
+    padding: 7px 8px;
+    text-align: left;
+    cursor: pointer;
+}
+
+.cluster-popover-item span {
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.cluster-popover-item small {
+    font-size: 0.72rem;
+    font-weight: 700;
+    opacity: 0.78;
+}
+
+.cluster-popover-item:hover,
+.cluster-popover-item:focus-visible {
+    filter: brightness(0.96);
+    outline: 2px solid #d32f2f;
+    outline-offset: 2px;
+}
+
+/* ---- Agenda ---- */
+
+.agenda {
+    padding: 8px 0 24px;
+}
+
+.agenda-heading {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #003262;
+    margin: 18px 0 8px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid #e3e6ea;
+}
+
+.agenda-items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.agenda-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid #edf0f3;
+}
+
+.agenda-now {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 4px 0;
+    color: #d32f2f;
+    font-size: 0.72rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.agenda-now::before,
+.agenda-now::after {
+    content: '';
+    height: 1px;
+    background: #d32f2f;
+}
+
+.agenda-now::before {
+    width: 96px;
+}
+
+.agenda-now::after {
+    flex: 1;
+}
+
+.agenda-item {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: none;
+    border: 0;
+    padding: 10px 4px;
+    text-align: left;
+    cursor: pointer;
+    font-size: 0.92rem;
+    color: #23303c;
+    min-width: 0;
+}
+
+.agenda-item:hover {
+    background: #eef2f6;
+}
+
+.agenda-time {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    font-variant-numeric: tabular-nums;
+    color: #003262;
+    white-space: nowrap;
+    min-width: 104px;
+}
+
+.agenda-time-main {
+    font-weight: 700;
+}
+
+/* The meeting's own scheduled time, shown only when it differs from the
+   zone the reader has selected. */
+.agenda-time-origin {
+    font-size: 0.72rem;
+    font-weight: 400;
+    color: #8a949e;
+}
+
+.agenda-time-end {
+    font-weight: 400;
+    opacity: 0.6;
+}
+
+.agenda-time-end::before {
+    content: '–';
+    margin: 0 2px;
+    opacity: 0.7;
+}
+
+.agenda-title {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.agenda-kinds {
+    white-space: nowrap;
+}
+
+.agenda-join {
+    white-space: nowrap;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #003262;
+    text-decoration: none;
+    padding: 4px 10px;
+    border: 1px solid #ccd2d9;
+    border-radius: 4px;
+}
+
+.agenda-join:hover {
+    background: #003262;
+    color: #fff;
+}
+
+/* ---- Past meetings ---- */
+
+/* Already finished: still readable and still joinable (recordings, late
+   arrivals), but visibly receded so the eye lands on what is coming up. */
+.agenda-row.is-past .agenda-time,
+.agenda-row.is-past .agenda-title {
+    color: #a4adb5;
+}
+
+.agenda-row.is-past .agenda-time-origin {
+    color: #bcc4cb;
+}
+
+.agenda-row.is-past .kind-tag {
+    background: #eef0f2;
+    color: #a4adb5;
+}
+
+.agenda-row.is-past .agenda-join {
+    color: #a4adb5;
+    border-color: #e3e6ea;
+}
+
+/* Past wins over the lane colour: what already happened recedes regardless
+   of which lane it sat in. */
+.weekgrid-event.is-past {
+    background: #f0f2f4;
+    border-color: #dfe3e7;
+    border-left-color: #b3bbc2;
+    color: #98a2ab;
+}
+
+.weekgrid-event.is-past:hover {
+    background: #e7eaee;
+    color: #6b757e;
+}
+
+.agenda-row.is-past {
+    border-left-color: #d4d9de;
+}
+
+/* ---- Search match ----
+   A brief cue after jumping across weeks, so the eye lands on the meeting
+   that was actually found. Fades itself out after a few seconds. */
+
+@keyframes match-pulse {
+    0%, 100% { box-shadow: 0 0 0 2px #d32f2f; }
+    50%      { box-shadow: 0 0 0 5px rgba(211, 47, 47, 0.28); }
+}
+
+.weekgrid-event.is-match,
+.agenda-row.is-match {
+    animation: match-pulse 1.2s ease-in-out 3;
+    border-radius: 4px;
+    position: relative;
+    z-index: 5;
+}
+
+.agenda-row.is-match {
+    background: #fff6f6;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .weekgrid-event.is-match,
+    .agenda-row.is-match {
+        animation: none;
+        box-shadow: 0 0 0 2px #d32f2f;
+    }
+}
+
+/* ---- Detail dialog ---- */
+
+.detail-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 20, 30, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 20;
+}
+
+.detail-panel {
+    background: var(--lane-bg, #fff);
+    border: 1px solid var(--lane-edge, #cdd8e2);
+    border-left: 4px solid var(--lane-edge, #003262);
+    border-radius: 8px;
+    max-width: 520px;
+    width: 100%;
+    max-height: 85vh;
+    overflow: auto;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+    color: var(--lane-ink, #23303c);
+}
+
+.detail-panel.is-past {
+    background: #f0f2f4;
+    border-color: #dfe3e7;
+    border-left-color: #b3bbc2;
+    color: #6b757e;
+}
+
+.detail-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 20px;
+    background: var(--lane-edge, #003262);
+    color: #fff;
+}
+
+.detail-panel.is-past .detail-head,
+.detail-panel.is-past .detail-join {
+    background: #b3bbc2;
+}
+
+.detail-panel.is-past .detail-copy {
+    border-color: #d4d9de;
+    color: #6b757e;
+}
+
+.detail-head h2 {
+    margin: 0;
+    font-size: 1.05rem;
+}
+
+.detail-close {
+    background: none;
+    border: 0;
+    color: #fff;
+    font-size: 1.6rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 4px;
+}
+
+.detail-close:hover {
+    color: #ffd700;
+}
+
+.detail-body {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 8px 16px;
+    margin: 0;
+    padding: 20px;
+    font-size: 0.9rem;
+}
+
+.timezone-note {
+    margin: 12px 20px 0;
+    padding: 8px 10px;
+    border-left: 3px solid var(--lane-edge, #003262);
+    background: rgba(255, 255, 255, 0.55);
+    color: #334252;
+    font-size: 0.82rem;
+    line-height: 1.35;
+}
+
+.detail-body dt {
+    font-weight: 600;
+    color: #5a6672;
+}
+
+.detail-body dd {
+    margin: 0;
+    color: var(--lane-ink, #23303c);
+}
+
+.detail-zone {
+    color: #5a6672;
+    font-size: 0.82rem;
+}
+
+/* ---- Hover card ---- */
+
+.hovercard {
+    position: fixed;
+    z-index: 30;
+    width: 320px;
+    background: var(--lane-bg, #fff);
+    border: 1px solid var(--lane-edge, #cdd8e2);
+    border-left: 4px solid var(--lane-edge, #003262);
+    border-radius: 8px;
+    box-shadow: 0 8px 28px rgba(0, 30, 60, 0.18);
+    pointer-events: auto;
+    color: var(--lane-ink, #23303c);
+}
+
+.hovercard.is-past {
+    background: #e7eaee;
+    border-color: #dfe3e7;
+    border-left-color: #b3bbc2;
+    color: #6b757e;
+}
+
+.hovercard.is-past .hovercard-title,
+.hovercard.is-past .hovercard-join {
+    background: #b3bbc2;
+}
+
+.hovercard.is-past .hovercard-copy {
+    border-color: #d4d9de;
+    color: #6b757e;
+}
+
+.hovercard-title {
+    margin: 0;
+    padding: 10px 14px;
+    font-size: 0.92rem;
+    background: var(--lane-edge, #003262);
+    color: #fff;
+    border-radius: 3px 7px 0 0;
+}
+
+.hovercard .detail-body {
+    padding: 12px 14px;
+    gap: 6px 12px;
+    font-size: 0.82rem;
+}
+
+.hovercard .timezone-note {
+    margin: 10px 14px 0;
+    background: rgba(255, 255, 255, 0.55);
+    border-left-color: var(--lane-edge, #003262);
+}
+
+.detail-copy,
+.hovercard-copy {
+    display: block;
+    margin: 0 20px 12px;
+    padding: 8px;
+    width: calc(100% - 40px);
+    border: 1px solid #ccd2d9;
+    border-radius: 4px;
+    background: #fff;
+    color: var(--lane-edge, #003262);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.detail-copy {
+    border-color: var(--lane-edge, #ccd2d9);
+}
+
+.hovercard-copy {
+    margin: 0 14px 10px;
+    width: calc(100% - 28px);
+    border-color: var(--lane-edge, #ccd2d9);
+    color: var(--lane-edge, #003262);
+}
+
+.detail-copy:hover,
+.hovercard-copy:hover {
+    background: #eef2f6;
+}
+
+.hovercard-join {
+    display: block;
+    margin: 0 14px 14px;
+    padding: 7px;
+    text-align: center;
+    background: var(--lane-edge, #003262);
+    color: #fff;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.hovercard-join:hover {
+    filter: brightness(0.92);
+}
+
+/* No hover card on touch — tapping opens the full dialog instead. */
+@media (hover: none) {
+    .hovercard {
+        display: none;
+    }
+}
+
+.detail-join {
+    display: block;
+    margin: 0 20px 20px;
+    padding: 10px;
+    text-align: center;
+    background: var(--lane-edge, #003262);
+    color: #fff;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.detail-join:hover {
+    filter: brightness(0.92);
+}
+
+/* ---- Notices, states, footer ---- */
+
+.empty-state {
+    padding: 40px 20px;
+    text-align: center;
+    color: #5a6672;
+}
+
+.error-detail {
+    font-size: 0.85rem;
+    color: #a02334;
+}
+
+.notice {
+    margin: 0;
+    padding: 8px 20px;
+    font-size: 0.85rem;
+}
+
+.notice-warn {
+    background: #fff5d6;
+    color: #6b5310;
+    border-bottom: 1px solid #eadfae;
+}
+
+.link-button {
+    background: none;
+    border: 0;
+    padding: 0;
+    color: #003262;
+    font: inherit;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.app-footer {
+    flex-shrink: 0;
+    padding: 8px 20px;
+    font-size: 0.78rem;
+    color: #8a949e;
+    background: #fff;
+    border-top: 1px solid #e3e6ea;
+}
+
+.app-footer-inner {
+    text-align: right;
+}
+
+.app-footer a {
+    color: #5a6672;
 }
 
 /* Mobile Adjustments */
 @media (max-width: 900px) {
     .app-header {
-        height: auto;
         padding: 10px;
+    }
+
+    .app-header-inner {
+        height: auto;
         flex-direction: column;
         gap: 10px;
+    }
+
+    /* The mini calendar moves above the agenda and centres, rather than
+       stealing a column from an already narrow screen. */
+    .calendar-container {
+        padding: 0 10px;
+        overflow: auto;
+    }
+
+    .calendar-layout {
+        flex-direction: column;
+        align-items: center;
+        gap: 0;
+        height: auto;
+    }
+
+    .sidebar {
+        width: 100%;
+        display: flex;
+        align-items: stretch;
+        gap: 10px;
+        padding: 12px 0 4px;
+        overflow-x: auto;
+    }
+
+    .minimonth,
+    .sidebar-links {
+        flex: 0 0 210px;
+    }
+
+    .sidebar-links {
+        margin-top: 0;
+        max-height: 326px;
+        overflow: auto;
+    }
+
+    .calendar-scroll {
+        width: 100%;
+        height: auto;
+        overflow: visible;
+    }
+
+    .controlbar-main {
+        justify-content: center;
+    }
+
+    .stats-panel {
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: nowrap;
+        white-space: nowrap;
+    }
+
+    .filter-search {
+        max-width: none;
+        flex-basis: 100%;
+    }
+
+    .search-wrap {
+        flex-basis: 100%;
+        max-width: none;
+    }
+
+    .filter-kinds {
+        justify-content: center;
     }
     
     .brand {
         width: 100%;
         justify-content: center;
+        min-width: 0;
+    }
+
+    /* The logo's natural size plus a nowrap title overflows a phone viewport,
+       pushing the whole header sideways. Let both shrink instead. */
+    .logo {
+        height: 32px;
+        max-width: 45%;
+        object-fit: contain;
+    }
+
+    .app-header h1 {
+        font-size: 1rem;
+        white-space: normal;
+        min-width: 0;
     }
 
     .controls {
         width: 100%;
-        flex-direction: column;
+        flex-wrap: wrap;
+        justify-content: center;
         gap: 10px;
+    }
+
+    .feed-refresh {
+        order: 3;
+        width: 100%;
+        justify-content: center;
     }
 
     .header-links {
@@ -123,7 +1632,7 @@ iframe {
     }
 
     .timezone-select {
-        width: 100%;
+        width: min(100%, 320px);
         max-width: none;
     }
 }

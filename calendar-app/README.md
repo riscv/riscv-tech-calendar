@@ -1,16 +1,70 @@
-# React + Vite
+# RISC-V Technical Meetings Calendar
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React/Vite calendar for the public RISC-V International technical meetings feed.
 
-Currently, two official plugins are available:
+The app reads the LFX iCalendar feed directly from:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+```text
+https://webcal.prod.itx.linuxfoundation.org/lfx/a092M00001JV3GBQA1
+```
 
-## React Compiler
+## Development
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```bash
+npm install
+npm run dev
+```
 
-## Expanding the ESLint configuration
+## Verification
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+npm run lint
+npm test
+npm run test:e2e
+npm run build
+```
+
+To sanity-check the production bundle locally:
+
+```bash
+npm run preview
+```
+
+To smoke-test the live public LFX feed:
+
+```bash
+npm run smoke:feed
+```
+
+The smoke command force-fetches the ICS, parses it, expands the current week,
+and prints counts by meeting kind. It needs network access.
+
+## Feed Refresh Behavior
+
+The page force-refreshes the feed when it first loads, refreshes every five
+minutes while visible, and also refreshes when the tab regains focus or comes
+back online. The refresh button always bypasses the browser cache.
+
+Important: newly added or removed LFX meetings can only appear after the public
+ICS endpoint has published the change. The app can force-reload the endpoint,
+but it cannot see meetings before LFX exposes them in that feed.
+
+## Meeting Kinds
+
+Only these meeting types get dedicated filters:
+
+- `TG`
+- `SIG`
+- `HC`
+- `CSC`
+
+Every meeting that is not one of those types is classified as `Other`.
+
+## Timezones
+
+The header timezone selector controls the main calendar time. The week view
+also shows reference time rails for `America/Los_Angeles`, `America/Chicago`,
+and `Asia/Shanghai`, followed by the selected local timezone.
+
+Times default to 24-hour display. The 12h/24h toggle is saved in the browser's
+local storage.

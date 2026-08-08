@@ -5,4 +5,9 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   base: './',
+  test: {
+    // The pipeline under test is pure JS with no DOM, so node keeps the run fast.
+    environment: 'node',
+    include: ['src/**/*.test.js'],
+  },
 })
