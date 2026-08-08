@@ -706,7 +706,7 @@
 /* ---- Week grid ---- */
 
 .weekgrid {
-    --time-gutter: 214px;
+    --time-gutter: 304px;
     padding: 0 0 20px;
     min-width: 840px;
 }
@@ -751,9 +751,8 @@
 
 .weekgrid-gutter-head {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    column-gap: 14px;
-    row-gap: 3px;
+    grid-template-columns: 62px 62px 72px 62px;
+    gap: 10px;
     align-items: end;
     padding: 10px 6px 8px 0;
     border-bottom: 1px solid #d8dde3;
@@ -775,11 +774,9 @@
 .weekgrid-hour-label {
     box-sizing: border-box;
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    column-gap: 14px;
-    row-gap: 3px;
-    align-content: start;
-    font-size: 0.66rem;
+    grid-template-columns: 62px 62px 72px 62px;
+    gap: 10px;
+    font-size: 0.64rem;
     font-variant-numeric: tabular-nums;
     text-align: right;
     padding-right: 6px;
@@ -788,7 +785,7 @@
 
 .weekgrid-hour-rail {
     display: flex;
-    align-items: flex-end;
+    align-items: baseline;
     justify-content: flex-end;
     min-width: 0;
     gap: 3px;
@@ -810,6 +807,7 @@
     font-size: 0.55rem;
     font-weight: 800;
     line-height: 1;
+    transform: translateY(-0.18em);
 }
 
 .weekgrid-col {
