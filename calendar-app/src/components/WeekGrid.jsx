@@ -330,9 +330,9 @@ export function WeekGrid({
                   className={`weekgrid-hour-rail${value.local ? ' is-local' : ''}`}
                   data-rail={value.key}
                 >
-                  {value.time}
+                  <span className="weekgrid-hour-time">{value.time}</span>
                   {value.offset && (
-                    <small className="weekgrid-hour-offset"> {value.offset}</small>
+                    <small className="weekgrid-hour-offset">{value.offset}</small>
                   )}
                 </span>
               ))}
